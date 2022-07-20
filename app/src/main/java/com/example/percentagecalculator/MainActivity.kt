@@ -60,6 +60,22 @@ fun Greeting(name: String) {
         mutableStateOf("0")
     }
 
+    var mustReturnAmount by remember {
+        mutableStateOf("0")
+    }
+
+    var ourTotalProfit by remember {
+        mutableStateOf("0")
+    }
+
+    var profitForShareOwner by remember {
+        mutableStateOf("0")
+    }
+
+    var profitForManager by remember {
+        mutableStateOf("0")
+    }
+
     percentOfTotal = if (text.isEmpty()) {
         0
     } else {
@@ -71,8 +87,34 @@ fun Greeting(name: String) {
     } else {
         (winNumberAmount.toInt()*80).toString()
     }
+
+    mustReturnAmount = if(totalReturnAmount.isEmpty()) {
+        "0"
+    } else {
+        (totalReturnAmount.toInt()*0.1).toString()
+    }
+    ourTotalProfit = if(totalLeft.isEmpty()) {
+        "0"
+    } else {
+        (totalLeft.toInt()-mustReturnAmount.toFloat()).roundToInt().toString()
+    }
+    profitForShareOwner = if(ourTotalProfit.isEmpty()) {
+        "0"
+    } else {
+        (ourTotalProfit.toInt()*0.25).roundToInt().toString()
+    }
+
+    profitForManager = if(ourTotalProfit.isEmpty()) {
+        "0"
+    } else {
+        (ourTotalProfit.toInt()*0.1).roundToInt().toString()
+    }
+
     commissionFee = ((percentOfTotal.toInt() * 0.17).roundToInt()).toString()
     totalLeft = (percentOfTotal.toInt() - commissionFee.toInt()).toString()
+
+
+
     Column(modifier = Modifier.padding(10.dp)) {
         Text(text = "Hello $name!", color = MaterialTheme.colorScheme.primary)
         Row(modifier = Modifier.padding(top = 10.dp)) {
@@ -115,6 +157,35 @@ fun Greeting(name: String) {
                     } else {
                         "0"
                 }
+            })
+        }
+        Row(modifier = Modifier.padding(top = 10.dp)) {
+            CommonText(text = "Our return amount?(10%)")
+            CommonTextField(text = mustReturnAmount, onValueChange = { value ->
+                mustReturnAmount = value
+                totalReturnAmount = if(mustReturnAmount.isNotEmpty()){
+                    ((mustReturnAmount.toInt()*10.0)).toString()
+                } else {
+                    "0"
+                }
+            })
+        }
+        Row(modifier = Modifier.padding(top = 10.dp)) {
+            CommonText(text = "Our total profit")
+            CommonTextField(text = ourTotalProfit, onValueChange = { value ->
+                ourTotalProfit = value
+            })
+        }
+        Row(modifier = Modifier.padding(top = 10.dp)) {
+            CommonText(text = "Share Owner profit")
+            CommonTextField(text = profitForShareOwner, onValueChange = { value ->
+                profitForShareOwner = value
+            })
+        }
+        Row(modifier = Modifier.padding(top = 10.dp)) {
+            CommonText(text = "Manager Profit")
+            CommonTextField(text = profitForManager, onValueChange = { value ->
+                profitForManager = value
             })
         }
     }
